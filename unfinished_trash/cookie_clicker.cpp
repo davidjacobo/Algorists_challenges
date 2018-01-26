@@ -2,22 +2,23 @@
 #include <iostream>
 #include <cstdio>
 
-#define INF 1<<20
-
 using namespace std;
 
-long double solve(long double speed, long double c, long double f, long double x) {
-  if (x <= c) return x / speed;
-  if (speed > x) return INF;  // This shit is too fast.
+long double solve(long double c, long double f, long double x) {
+  long double s0 = 2.0;
+  long double t0 = x / s0, t1;
+  int i = 1;
+  long double sum = 0.0;
 
-  // Two options, either solve right away without further increasing the speed.
-  long double sol_a = x / speed;
-  
-  // Otherwise increase the speed by one ASAP
-  long double sol_b = c / speed;
-  sol_b+= solve(speed + f, c, f, x);
+  while(1) {
+    sum = sum + c/(s0 + f*(i-1));
+    t1 = sum + x/(s0 + f*i);
+    if (t1 > t0) break;
+    t0 = t1;
+    ++i;
+  }
 
-  return min(sol_a, sol_b);
+  return t0;
 }
 
 int main() {
@@ -26,7 +27,7 @@ int main() {
   cin>>t;
   while(t--) {
     cin>>c>>f>>x;
-    printf("Case #%d: %.7Lf\n",counter++, solve(2.0, c,f,x));
+    printf("Case #%d: %.7Lf\n",counter++, solve(c,f,x));
   }
   return 0;
 }
